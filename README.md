@@ -1,16 +1,20 @@
-# trying_flutter
+# Chefventory
 
-A new Flutter project.
+Why This Project?
+Restaurants often struggle with food wastage and inventory theft. Ingredients expire before
+use, and staff may misuse stock. Manual systems make tracking slow and error-prone.
+Chefventory is an inventory management system built with OOP concepts to help
+restaurants reduce food wastage and protect inventory privacy.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Goals of the Project
+- Reduce Food Wastage through expiry tracking, stock monitoring, and consumption
+analysis.
+- Protect Inventory Privacy by restricting staff access and using activity logs.
+- Apply OOP concepts
+- - Encapsulation – Keep ingredient data secure.
+- - Inheritance – Differentiate roles (Admin, Staff).
+- - Polymorphism – Orders can handle both dishes and custom ingredients.
+- - Abstraction – Dashboard shows only alerts and insights.
+- - Composition – Dishes contain ingredients, Inventory manages ingredients.
+- Deliver a working system with a simple dashboard and role-based access.
