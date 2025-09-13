@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "421130170782",
+    "project_id": "chefventory-f278f",
+    "storage_bucket": "chefventory-f278f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:421130170782:android:7807b40cb5d92ca705668f",
+        "android_client_info": {
+          "package_name": "com.example.trying_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6bA0eoU--1dmfL3oNmd41fU1YvO2OiQk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
