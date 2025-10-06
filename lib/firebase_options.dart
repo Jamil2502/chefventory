@@ -43,7 +43,7 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
+  static FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyA0eUw-ITQ7y8hM5IDme-nrWOyn00yWvuA',
     appId: '1:421130170782:web:f094cae292d400c105668f',
     messagingSenderId: '421130170782',
@@ -53,7 +53,7 @@ class DefaultFirebaseOptions {
     measurementId: 'G-Y7FXTVZRFJ',
   );
 
-  static const FirebaseOptions android = FirebaseOptions(
+  static FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB6bA0eoU--1dmfL3oNmd41fU1YvO2OiQk',
     appId: '1:421130170782:android:7807b40cb5d92ca705668f',
     messagingSenderId: '421130170782',
@@ -61,7 +61,7 @@ class DefaultFirebaseOptions {
     storageBucket: 'chefventory-f278f.firebasestorage.app',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
+  static FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDiNMjHOtvxZLmsvlIgWmRQLvG8eOPXyt8',
     appId: '1:421130170782:ios:566d8a7084b1dd7d05668f',
     messagingSenderId: '421130170782',
@@ -70,7 +70,7 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.example.tryingFlutter',
   );
 
-  static const FirebaseOptions windows = FirebaseOptions(
+  static FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyA0eUw-ITQ7y8hM5IDme-nrWOyn00yWvuA',
     appId: '1:421130170782:web:d7b487556dd2a6e405668f',
     messagingSenderId: '421130170782',

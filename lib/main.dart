@@ -1,15 +1,13 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart'; 
+import 'firebase_options.dart';
+import 'package:chefventory/screens/inventory_screen.dart'; // add this import
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
   runApp(Chefventory());
 }
 
@@ -18,12 +16,7 @@ class Chefventory extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Chefventory',
-      home: Scaffold(
-        appBar: AppBar(title: Text('Chefventory')),
-        body: Center(
-          child: Text('Firebase Setup Complete!'),
-        ),
-      ),
+      home: InventoryScreen(), // Updated to show your inventory page
     );
   }
 }

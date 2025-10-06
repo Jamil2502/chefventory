@@ -1,4 +1,3 @@
-
 import 'dart:collection';
 import 'ingredient.dart';
 import 'dish.dart';
@@ -20,7 +19,7 @@ class Inventory {
 
   bool addIngredient(Ingredient ingredient) {
     if (!_ingredients.containsKey(ingredient.ingredientId)) {
-      _ingredients[ingredient.ingredientId] = ingredient;
+      _ingredients[ingredient.ingredientId] = ingredient; // <-- Fixed here
       _lastUpdated = DateTime.now();
       return true;
     }
