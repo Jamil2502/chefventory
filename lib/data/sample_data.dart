@@ -1,29 +1,27 @@
-
 import '../services/firebase_config.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SampleData {
-
   static Future<void> initializeDatabase() async {
     print(' Starting database initialization...');
-    
+
     try {
       await _createSampleUsers();
-      await _createSampleIngredients(); 
+      await _createSampleIngredients();
       await _createSampleDishes();
       await _createSampleOrders();
-      
+
       print('Database initialization completed successfully!');
     } catch (e) {
       print('Database initialization failed: $e');
     }
   }
 
-  // SAMPLE USERS 
-  
+  // SAMPLE USERS
+
   static Future<void> _createSampleUsers() async {
     print('Creating sample users...');
-    
+
     final users = [
       {
         'userId': 'user_1001',
@@ -33,7 +31,7 @@ class SampleData {
         'createdAt': FirebaseConfig.getCurrentTimestamp(),
       },
       {
-        'userId': 'user_1002', 
+        'userId': 'user_1002',
         'username': 'head_chef',
         'email': 'chef@restaurant.com',
         'role': 'admin',
@@ -48,7 +46,7 @@ class SampleData {
       },
       {
         'userId': 'user_1004',
-        'username': 'kitchen_staff2', 
+        'username': 'kitchen_staff2',
         'email': 'staff2@restaurant.com',
         'role': 'staff',
         'createdAt': FirebaseConfig.getCurrentTimestamp(),
@@ -58,15 +56,15 @@ class SampleData {
     for (var user in users) {
       await FirebaseConfig.users.doc(user['userId'].toString()).set(user);
     }
-    
+
     print('Created ${users.length} sample users');
   }
 
-  // SAMPLE INGREDIENTS 
-  
+  // SAMPLE INGREDIENTS
+
   static Future<void> _createSampleIngredients() async {
     print('Creating sample ingredients...');
-    
+
     final ingredients = [
       {
         'ingredientId': 'ing_1001',
@@ -79,7 +77,7 @@ class SampleData {
       },
       {
         'ingredientId': 'ing_1002',
-        'name': 'Onion', 
+        'name': 'Onion',
         'currentStock': 3000.0, // 3kg
         'unit': 'g',
         'expiryDate': '2025-09-20',
@@ -90,7 +88,7 @@ class SampleData {
         'ingredientId': 'ing_1003',
         'name': 'Mozzarella Cheese',
         'currentStock': 2000.0, // 2kg
-        'unit': 'g', 
+        'unit': 'g',
         'expiryDate': '2025-09-12', // Expires soon!
         'alertThreshold': 400.0,
         'lastUpdated': FirebaseConfig.getCurrentTimestamp(),
@@ -126,7 +124,7 @@ class SampleData {
         'ingredientId': 'ing_1007',
         'name': 'Bell Pepper',
         'currentStock': 1200.0,
-        'unit': 'g', 
+        'unit': 'g',
         'expiryDate': '2025-09-18',
         'alertThreshold': 250.0,
         'lastUpdated': FirebaseConfig.getCurrentTimestamp(),
@@ -143,17 +141,19 @@ class SampleData {
     ];
 
     for (var ingredient in ingredients) {
-      await FirebaseConfig.ingredients.doc(ingredient['ingredientId'].toString()).set(ingredient);
+      await FirebaseConfig.ingredients
+          .doc(ingredient['ingredientId'].toString())
+          .set(ingredient);
     }
-    
+
     print('Created ${ingredients.length} sample ingredients');
   }
 
-  // SAMPLE DISHES 
-  
+  // SAMPLE DISHES
+
   static Future<void> _createSampleDishes() async {
     print('Creating sample dishes...');
-    
+
     final dishes = [
       {
         'dishId': 'dish_1001',
@@ -163,10 +163,10 @@ class SampleData {
         'category': 'Main Course',
         'ingredientRequirements': {
           'ing_1001': 200.0, // Tomato: 200g
-          'ing_1002': 50.0,  // Onion: 50g  
+          'ing_1002': 50.0, // Onion: 50g
           'ing_1004': 150.0, // Pasta: 150g
-          'ing_1005': 15.0,  // Olive Oil: 15ml
-          'ing_1006': 10.0,  // Garlic: 10g
+          'ing_1005': 15.0, // Olive Oil: 15ml
+          'ing_1006': 10.0, // Garlic: 10g
         },
         'createdAt': FirebaseConfig.getCurrentTimestamp(),
       },
@@ -179,7 +179,7 @@ class SampleData {
         'ingredientRequirements': {
           'ing_1001': 150.0, // Tomato: 150g
           'ing_1003': 200.0, // Mozzarella: 200g
-          'ing_1005': 10.0,  // Olive Oil: 10ml
+          'ing_1005': 10.0, // Olive Oil: 10ml
         },
         'createdAt': FirebaseConfig.getCurrentTimestamp(),
       },
@@ -188,13 +188,13 @@ class SampleData {
         'name': 'Chicken Stir Fry',
         'description': 'Stir-fried chicken with bell peppers and onions',
         'basePrice': 18.99,
-        'category': 'Main Course', 
+        'category': 'Main Course',
         'ingredientRequirements': {
           'ing_1008': 300.0, // Chicken: 300g
           'ing_1007': 150.0, // Bell Pepper: 150g
           'ing_1002': 100.0, // Onion: 100g
-          'ing_1006': 15.0,  // Garlic: 15g
-          'ing_1005': 20.0,  // Olive Oil: 20ml
+          'ing_1006': 15.0, // Garlic: 15g
+          'ing_1005': 20.0, // Olive Oil: 20ml
         },
         'createdAt': FirebaseConfig.getCurrentTimestamp(),
       },
@@ -207,7 +207,7 @@ class SampleData {
         'ingredientRequirements': {
           'ing_1001': 300.0, // Tomato: 300g (highest requirement!)
           'ing_1003': 150.0, // Mozzarella: 150g
-          'ing_1005': 25.0,  // Olive Oil: 25ml
+          'ing_1005': 25.0, // Olive Oil: 25ml
         },
         'createdAt': FirebaseConfig.getCurrentTimestamp(),
       },
@@ -219,8 +219,8 @@ class SampleData {
         'category': 'Main Course',
         'ingredientRequirements': {
           'ing_1004': 200.0, // Pasta: 200g
-          'ing_1006': 25.0,  // Garlic: 25g
-          'ing_1005': 30.0,  // Olive Oil: 30ml (highest requirement!)
+          'ing_1006': 25.0, // Garlic: 25g
+          'ing_1005': 30.0, // Olive Oil: 30ml (highest requirement!)
         },
         'createdAt': FirebaseConfig.getCurrentTimestamp(),
       },
@@ -229,15 +229,15 @@ class SampleData {
     for (var dish in dishes) {
       await FirebaseConfig.dishes.doc(dish['dishId'].toString()).set(dish);
     }
-    
+
     print('Created ${dishes.length} sample dishes');
   }
 
-  // SAMPLE ORDERS 
-  
+  // SAMPLE ORDERS
+
   static Future<void> _createSampleOrders() async {
     print('Creating sample orders...');
-    
+
     final orders = [
       {
         'orderId': 'order_1001',
@@ -249,21 +249,21 @@ class SampleData {
         },
         'timestamp': FirebaseConfig.getCurrentTimestamp(),
         'processedBy': 'user_1003',
-        'status': 'completed'
+        'status': 'completed',
       },
       {
-        'orderId': 'order_1002', 
+        'orderId': 'order_1002',
         'dishId': 'dish_1002',
         'dishName': 'Margherita Pizza',
         'quantity': 1,
         'customIngredients': {},
         'timestamp': FirebaseConfig.getCurrentTimestamp(),
         'processedBy': 'user_1004',
-        'status': 'completed'
+        'status': 'completed',
       },
       {
         'orderId': 'order_1003',
-        'dishId': 'dish_1003', 
+        'dishId': 'dish_1003',
         'dishName': 'Chicken Stir Fry',
         'quantity': 3,
         'customIngredients': {
@@ -271,36 +271,36 @@ class SampleData {
         },
         'timestamp': FirebaseConfig.getCurrentTimestamp(),
         'processedBy': 'user_1003',
-        'status': 'completed'
+        'status': 'completed',
       },
     ];
 
     for (var order in orders) {
       await FirebaseConfig.orders.doc(order['orderId'].toString()).set(order);
     }
-    
+
     print('Created ${orders.length} sample orders');
   }
 
-  // CLEAR DATABASE 
-  
+  // CLEAR DATABASE
+
   static Future<void> clearDatabase() async {
     print('Clearing database...');
-    
+
     try {
       // Delete all documents in each collection
       await _clearCollection(FirebaseConfig.users);
       await _clearCollection(FirebaseConfig.ingredients);
       await _clearCollection(FirebaseConfig.dishes);
       await _clearCollection(FirebaseConfig.orders);
-      
+
       print('Database cleared successfully');
     } catch (e) {
       print('Failed to clear database: $e');
     }
   }
-  
- static Future<void> _clearCollection(CollectionReference collection) async {
+
+  static Future<void> _clearCollection(CollectionReference collection) async {
     final snapshots = await collection.get();
     for (var doc in snapshots.docs) {
       await doc.reference.delete();
