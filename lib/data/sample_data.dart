@@ -159,7 +159,7 @@ class SampleData {
         'dishId': 'dish_1001',
         'name': 'Pasta Arrabiata',
         'description': 'Spicy pasta with tomato sauce and garlic',
-        'basePrice': 12.99,
+        'basePrice': 69.99,
         'category': 'Main Course',
         'ingredientRequirements': {
           'ing_1001': 200.0, // Tomato: 200g

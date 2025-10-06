@@ -1,14 +1,13 @@
-
 import 'dart:collection';
 import 'ingredient.dart';
 
 class Dish {
-  String _dishId;
-  String _name;
+  final String _dishId;
+  final String _name;
   String _description;
   double _basePrice;
-  Map<String, double> _ingredientRequirements; 
-  String _category;
+  final Map<String, double> _ingredientRequirements;
+  final String _category;
   static int _idCounter = 1000;
 
   Dish({
@@ -18,17 +17,19 @@ class Dish {
     required Map<String, double> ingredientRequirements,
     required String category,
   }) : _dishId = 'dish_${++_idCounter}',
-        _name = name,
-        _description = description,
-        _basePrice = basePrice,
-        _ingredientRequirements = Map<String, double>.from(ingredientRequirements),
-        _category = category;
+       _name = name,
+       _description = description,
+       _basePrice = basePrice,
+       _ingredientRequirements = Map<String, double>.from(
+         ingredientRequirements,
+       ),
+       _category = category;
 
   String get dishId => _dishId;
   String get name => _name;
   String get description => _description;
   double get basePrice => _basePrice;
-  UnmodifiableMapView<String, double> get ingredientRequirements => 
+  UnmodifiableMapView<String, double> get ingredientRequirements =>
       UnmodifiableMapView(_ingredientRequirements);
   String get category => _category;
 
@@ -76,7 +77,7 @@ class Dish {
     for (String ingredientId in _ingredientRequirements.keys) {
       final ingredient = inventory[ingredientId];
       final requiredQty = _ingredientRequirements[ingredientId]!;
-      
+
       if (ingredient == null || ingredient.currentStock < requiredQty) {
         return false;
       }

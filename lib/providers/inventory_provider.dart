@@ -4,7 +4,7 @@ import '../models/ingredient.dart';
 import '../models/dish.dart';
 
 class InventoryProvider with ChangeNotifier {
-  Inventory _inventory = Inventory(restaurantId: 'rest_001');
+  final Inventory _inventory = Inventory(restaurantId: 'rest_001');
   List<Dish> _dishes = [];
   bool _isLoading = false;
   String? _errorMessage;
@@ -14,8 +14,10 @@ class InventoryProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  List<Ingredient> get lowStockIngredients => _inventory.getLowStockIngredients();
-  List<Ingredient> get expiringSoonIngredients => _inventory.getExpiringSoonIngredients(3);
+  List<Ingredient> get lowStockIngredients =>
+      _inventory.getLowStockIngredients();
+  List<Ingredient> get expiringSoonIngredients =>
+      _inventory.getExpiringSoonIngredients(3);
   List<Ingredient> get expiredIngredients => _inventory.getExpiredIngredients();
 
   void setLoading(bool loading) {
@@ -108,7 +110,7 @@ class InventoryProvider with ChangeNotifier {
       Dish(
         name: 'Classic Burger',
         description: 'Juicy beef patty with fresh vegetables',
-        basePrice: 12.99,
+        basePrice: 69.99,
         ingredientRequirements: {
           'ing_1001': 0.2, // Ground Beef
           'ing_1002': 0.1, // Cheese
@@ -122,7 +124,7 @@ class InventoryProvider with ChangeNotifier {
       Dish(
         name: 'Chicken Sandwich',
         description: 'Grilled chicken with fresh vegetables',
-        basePrice: 10.99,
+        basePrice: 169.99,
         ingredientRequirements: {
           'ing_1008': 0.15, // Chicken Breast
           'ing_1002': 0.08, // Cheese
@@ -135,7 +137,7 @@ class InventoryProvider with ChangeNotifier {
       Dish(
         name: 'French Fries',
         description: 'Crispy golden fries',
-        basePrice: 4.99,
+        basePrice: 69.99,
         ingredientRequirements: {
           'ing_1007': 0.2, // Potatoes
         },

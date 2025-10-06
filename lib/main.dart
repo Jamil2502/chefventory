@@ -46,7 +46,7 @@ class Chefventory extends StatelessWidget {
                   if (authProvider.isAdmin) {
                     return const AdminDashboard();
                   } else if (authProvider.isStaff) {
-                    return const StaffDashboard();
+                    return const ModernStaffDashboard();
                   }
                 }
                 return const LoginScreen();

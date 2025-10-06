@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/inventory_provider.dart';
 import '../../theme/app_theme.dart';
+import '../../services/currency.dart';
 import '../../models/dish.dart';
 
 class OrderProcessingScreen extends StatefulWidget {
@@ -173,7 +174,7 @@ class _OrderProcessingScreenState extends State<OrderProcessingScreen> {
                         Row(
                           children: [
                             Text(
-                              '\$${dish.basePrice.toStringAsFixed(2)}',
+                              CurrencyService.formatInr(dish.basePrice),
                               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                 color: AppTheme.primaryBrown,
                                 fontWeight: FontWeight.bold,
@@ -186,7 +187,7 @@ class _OrderProcessingScreenState extends State<OrderProcessingScreen> {
                               color: dish.category == 'Burgers'
                                   ? AppTheme.primaryBrown.withOpacity(0.1)
                                   : dish.category == 'Sandwiches'
-                                      ? AppTheme.accentBrown.withOpacity(0.1)
+                                      ? AppTheme.secondaryBrown.withOpacity(0.1)
                                       : AppTheme.grey.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -196,7 +197,7 @@ class _OrderProcessingScreenState extends State<OrderProcessingScreen> {
                                 color: dish.category == 'Burgers'
                                     ? AppTheme.primaryBrown
                                     : dish.category == 'Sandwiches'
-                                        ? AppTheme.accentBrown
+                                        ? AppTheme.secondaryBrown
                                         : AppTheme.grey,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
@@ -377,7 +378,7 @@ class _OrderProcessingScreenState extends State<OrderProcessingScreen> {
                 ),
               ),
               Text(
-                '\$${totalPrice.toStringAsFixed(2)}',
+                CurrencyService.formatInr(totalPrice),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: AppTheme.primaryBrown,
                   fontWeight: FontWeight.bold,
@@ -454,7 +455,7 @@ class _OrderProcessingScreenState extends State<OrderProcessingScreen> {
             Text('Process order with ${_selectedDishes.length} items?'),
             const SizedBox(height: 12),
             Text(
-              'Total: \$${_selectedDishes.fold<double>(0.0, (sum, dish) => sum + dish.basePrice).toStringAsFixed(2)}',
+              'Total: ${CurrencyService.formatInr(_selectedDishes.fold<double>(0.0, (sum, dish) => sum + dish.basePrice))}',
               style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 color: AppTheme.primaryBrown,

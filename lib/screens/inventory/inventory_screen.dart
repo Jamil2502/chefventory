@@ -17,7 +17,12 @@ class _InventoryScreenState extends State<InventoryScreen> {
   String _searchQuery = '';
   String _selectedFilter = 'All';
 
-  final List<String> _filterOptions = ['All', 'Low Stock', 'Expiring Soon', 'Expired'];
+  final List<String> _filterOptions = [
+    'All',
+    'Low Stock',
+    'Expiring Soon',
+    'Expired',
+  ];
 
   @override
   void dispose() {
@@ -86,31 +91,42 @@ class _InventoryScreenState extends State<InventoryScreen> {
             child: Consumer<InventoryProvider>(
               builder: (context, inventoryProvider, child) {
                 if (inventoryProvider.isLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 }
 
-                List<Ingredient> ingredients = inventoryProvider.inventory.ingredients.values.toList();
+                List<Ingredient> ingredients = inventoryProvider
+                    .inventory
+                    .ingredients
+                    .values
+                    .toList();
 
                 // Apply search filter
                 if (_searchQuery.isNotEmpty) {
                   ingredients = ingredients
-                      .where((ingredient) =>
-                          ingredient.name.toLowerCase().contains(_searchQuery.toLowerCase()))
+                      .where(
+                        (ingredient) => ingredient.name.toLowerCase().contains(
+                          _searchQuery.toLowerCase(),
+                        ),
+                      )
                       .toList();
                 }
 
                 // Apply category filter
                 switch (_selectedFilter) {
                   case 'Low Stock':
-                    ingredients = ingredients.where((ingredient) => ingredient.isLowStock()).toList();
+                    ingredients = ingredients
+                        .where((ingredient) => ingredient.isLowStock())
+                        .toList();
                     break;
                   case 'Expiring Soon':
-                    ingredients = ingredients.where((ingredient) => ingredient.isExpiringSoon(3)).toList();
+                    ingredients = ingredients
+                        .where((ingredient) => ingredient.isExpiringSoon(3))
+                        .toList();
                     break;
                   case 'Expired':
-                    ingredients = ingredients.where((ingredient) => ingredient.isExpired()).toList();
+                    ingredients = ingredients
+                        .where((ingredient) => ingredient.isExpired())
+                        .toList();
                     break;
                 }
 
@@ -120,7 +136,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          _searchQuery.isNotEmpty ? Icons.search_off : Icons.inventory_2_outlined,
+                          _searchQuery.isNotEmpty
+                              ? Icons.search_off
+                              : Icons.inventory_2_outlined,
                           size: 64,
                           color: AppTheme.grey,
                         ),
@@ -129,9 +147,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
                           _searchQuery.isNotEmpty
                               ? 'No ingredients found for "$_searchQuery"'
                               : 'No ingredients found',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: AppTheme.grey,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(color: AppTheme.grey),
                         ),
                         if (_searchQuery.isNotEmpty)
                           TextButton(
@@ -208,16 +225,20 @@ class _InventoryScreenState extends State<InventoryScreen> {
                       const SizedBox(height: 4),
                       Text(
                         '${ingredient.currentStock.toStringAsFixed(1)} ${ingredient.unit}',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: AppTheme.primaryBrown,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: AppTheme.primaryBrown,
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(16),
@@ -245,17 +266,13 @@ class _InventoryScreenState extends State<InventoryScreen> {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  Icon(
-                    Icons.schedule,
-                    size: 16,
-                    color: AppTheme.grey,
-                  ),
+                  Icon(Icons.schedule, size: 16, color: AppTheme.grey),
                   const SizedBox(width: 4),
                   Text(
                     'Expires: ${_formatDate(ingredient.expiryDate!)}',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.grey,
-                    ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: AppTheme.grey),
                   ),
                 ],
               ),
@@ -263,17 +280,13 @@ class _InventoryScreenState extends State<InventoryScreen> {
             const SizedBox(height: 8),
             Row(
               children: [
-                Icon(
-                  Icons.update,
-                  size: 16,
-                  color: AppTheme.grey,
-                ),
+                Icon(Icons.update, size: 16, color: AppTheme.grey),
                 const SizedBox(width: 4),
                 Text(
                   'Updated: ${_formatDate(ingredient.lastUpdated)}',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppTheme.grey,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: AppTheme.grey),
                 ),
                 const Spacer(),
                 // Action buttons
@@ -286,7 +299,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.remove, size: 20),
-                      onPressed: () => _showConsumeStockDialog(ingredient, context),
+                      onPressed: () =>
+                          _showConsumeStockDialog(ingredient, context),
                       color: AppTheme.primaryBrown,
                     ),
                   ],
@@ -301,15 +315,13 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
   void _navigateToAddIngredient(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AddIngredientScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const AddIngredientScreen()),
     );
   }
 
   void _showAddStockDialog(Ingredient ingredient, BuildContext context) {
     final quantityController = TextEditingController();
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -337,13 +349,17 @@ class _InventoryScreenState extends State<InventoryScreen> {
             onPressed: () async {
               final quantity = double.tryParse(quantityController.text);
               if (quantity != null && quantity > 0) {
-                final success = await Provider.of<InventoryProvider>(context, listen: false)
-                    .updateStock(ingredient.ingredientId, quantity);
+                final success = await Provider.of<InventoryProvider>(
+                  context,
+                  listen: false,
+                ).updateStock(ingredient.ingredientId, quantity);
                 if (success && context.mounted) {
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Added ${quantity} ${ingredient.unit} to ${ingredient.name}'),
+                      content: Text(
+                        'Added $quantity ${ingredient.unit} to ${ingredient.name}',
+                      ),
                       backgroundColor: AppTheme.successGreen,
                     ),
                   );
@@ -359,7 +375,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
   void _showConsumeStockDialog(Ingredient ingredient, BuildContext context) {
     final quantityController = TextEditingController();
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -367,7 +383,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Current stock: ${ingredient.currentStock} ${ingredient.unit}'),
+            Text(
+              'Current stock: ${ingredient.currentStock} ${ingredient.unit}',
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: quantityController,
@@ -388,14 +406,20 @@ class _InventoryScreenState extends State<InventoryScreen> {
           ElevatedButton(
             onPressed: () async {
               final quantity = double.tryParse(quantityController.text);
-              if (quantity != null && quantity > 0 && quantity <= ingredient.currentStock) {
-                final success = await Provider.of<InventoryProvider>(context, listen: false)
-                    .consumeStock(ingredient.ingredientId, quantity);
+              if (quantity != null &&
+                  quantity > 0 &&
+                  quantity <= ingredient.currentStock) {
+                final success = await Provider.of<InventoryProvider>(
+                  context,
+                  listen: false,
+                ).consumeStock(ingredient.ingredientId, quantity);
                 if (success && context.mounted) {
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Consumed ${quantity} ${ingredient.unit} from ${ingredient.name}'),
+                      content: Text(
+                        'Consumed $quantity ${ingredient.unit} from ${ingredient.name}',
+                      ),
                       backgroundColor: AppTheme.primaryBrown,
                     ),
                   );

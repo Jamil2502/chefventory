@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
 import '../../providers/inventory_provider.dart';
-import '../../providers/theme_provider.dart';
+import '../../providers/auth_provider.dart';
 import '../../theme/app_theme.dart';
 import '../inventory/inventory_screen.dart';
 import '../orders/order_processing_screen.dart';
 import '../analytics/analytics_screen.dart';
+import '../auth/login_screen.dart';
+import 'widgets/alert_center_widget.dart';
+import 'widgets/system_statistics_widget.dart';
+import 'widgets/recent_activity_widget.dart';
+import 'widgets/quick_actions_widget.dart';
+import 'widgets/analytics_overview_widget.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -36,181 +41,50 @@ class _AdminDashboardState extends State<AdminDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Chefventory Admin'),
-        actions: [
-          Consumer<ThemeProvider>(
-            builder: (context, themeProvider, child) {
-              return IconButton(
-                icon: Icon(themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode),
-                onPressed: () => themeProvider.toggleTheme(),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () => _showNotifications(context),
-          ),
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'logout') {
-                _handleLogout();
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'logout',
-                child: Row(
-                  children: [
-                    Icon(Icons.logout, color: AppTheme.grey),
-                    SizedBox(width: 8),
-                    Text('Logout'),
-                  ],
-                ),
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
               ),
             ],
           ),
-        ],
-      ),
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
+        child: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
         selectedItemColor: AppTheme.primaryBrown,
         unselectedItemColor: AppTheme.grey,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Dashboard',
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.inventory),
+              icon: Icon(Icons.inventory_2_outlined),
+              activeIcon: Icon(Icons.inventory_2),
             label: 'Inventory',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant),
+              icon: Icon(Icons.shopping_cart_outlined),
+              activeIcon: Icon(Icons.shopping_cart),
             label: 'Orders',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.analytics),
+              icon: Icon(Icons.analytics_outlined),
+              activeIcon: Icon(Icons.analytics),
             label: 'Analytics',
           ),
         ],
       ),
-    );
-  }
-
-  void _showNotifications(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Notifications'),
-        content: Consumer<InventoryProvider>(
-          builder: (context, inventoryProvider, child) {
-            final lowStock = inventoryProvider.lowStockIngredients;
-            final expiring = inventoryProvider.expiringSoonIngredients;
-            final expired = inventoryProvider.expiredIngredients;
-
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (expired.isNotEmpty) ...[
-                  _buildNotificationItem(
-                    'Expired Items',
-                    '${expired.length} items have expired',
-                    AppTheme.errorRed,
-                  ),
-                  const SizedBox(height: 8),
-                ],
-                if (expiring.isNotEmpty) ...[
-                  _buildNotificationItem(
-                    'Expiring Soon',
-                    '${expiring.length} items expiring in 3 days',
-                    AppTheme.warningYellow,
-                  ),
-                  const SizedBox(height: 8),
-                ],
-                if (lowStock.isNotEmpty) ...[
-                  _buildNotificationItem(
-                    'Low Stock',
-                    '${lowStock.length} items are low on stock',
-                    AppTheme.primaryBrown,
-                  ),
-                ],
-                if (expired.isEmpty && expiring.isEmpty && lowStock.isEmpty)
-                  const Text('No notifications'),
-              ],
-            );
-          },
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNotificationItem(String title, String message, Color color) {
-    return Row(
-      children: [
-        Container(
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
-              ),
-              Text(
-                message,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppTheme.grey,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _handleLogout() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              Provider.of<AuthProvider>(context, listen: false).logout();
-            },
-            child: const Text('Logout'),
-          ),
-        ],
       ),
     );
   }
@@ -221,498 +95,341 @@ class AdminHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+    return Container(
+      color: AppTheme.cream,
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Hero Banner
-          Container(
-            height: 200,
+            _buildModernHeader(context),
+            
+            const SizedBox(height: 32),
+            
+            _buildWelcomeSection(context),
+            
+            const SizedBox(height: 32),
+            
+            _buildSection(
+              context,
+              'Alert Center',
+              const AlertCenterWidget(),
+            ),
+
+            const SizedBox(height: 16),
+            
+            _buildSection(
+              context,
+              'System Statistics',
+              const SystemStatisticsWidget(),
+            ),
+
+            const SizedBox(height: 24),
+            
+            _buildSection(
+              context,
+              'Recent Activity',
+              const RecentActivityWidget(),
+            ),
+
+            const SizedBox(height: 16),
+            
+            _buildSection(
+              context,
+              'Quick Actions',
+              const QuickActionsWidget(),
+            ),
+
+            const SizedBox(height: 24),
+            
+            _buildSection(
+              context,
+              'Analytics Overview',
+              const AnalyticsOverviewWidget(),
+            ),
+            
+            const SizedBox(height: 48),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildModernHeader(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
                   AppTheme.primaryBrown,
-                  AppTheme.darkBrown,
-                ],
-              ),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Stack(
+            AppTheme.primaryBrown.withOpacity(0.8),
+          ],
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            Row(
               children: [
-                // Background Pattern
-                Positioned(
-                  right: -20,
-                  top: -20,
+                GestureDetector(
+                  onTap: () => _showUserMenu(context),
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
                   child: Container(
-                    width: 120,
-                    height: 120,
+                      width: 50,
+                      height: 50,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      shape: BoxShape.circle,
+                        color: AppTheme.secondaryBrown,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.person,
+                        color: AppTheme.white,
+                        size: 28,
+                      ),
                     ),
                   ),
                 ),
-                Positioned(
-                  right: 40,
-                  bottom: -10,
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-                // Content
-                Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Search functionality coming soon')),
+                      );
+                    },
+                    child: Container(
+                      height: 50,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Icon(
-                              Icons.admin_panel_settings,
-                              size: 32,
                               color: AppTheme.white,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Welcome back, Admin!',
-                                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                    color: AppTheme.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Manage your restaurant inventory efficiently',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: AppTheme.white.withOpacity(0.9),
-                                  ),
-                                ),
-                              ],
-                            ),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 15,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
-                      Row(
+                      child: Row(
                         children: [
-                          _buildBannerStat('Ingredients', '24', Icons.inventory),
-                          const SizedBox(width: 20),
-                          _buildBannerStat('Dishes', '12', Icons.restaurant_menu),
-                          const SizedBox(width: 20),
-                          _buildBannerStat('Orders', '8', Icons.shopping_cart),
+                          const SizedBox(width: 16),
+                          const Icon(
+                            Icons.search,
+                            color: AppTheme.grey,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: const Text(
+                              'Search your inventory',
+                              style: TextStyle(
+                                color: AppTheme.grey,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Filter options coming soon')),
+                              );
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 8),
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: AppTheme.secondaryBrown,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(
+                                Icons.tune,
+                                color: AppTheme.white,
+                                size: 18,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          // Alert Center
-          Text(
-            'Alert Center',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 12),
-          Consumer<InventoryProvider>(
-            builder: (context, inventoryProvider, child) {
-              final lowStock = inventoryProvider.lowStockIngredients;
-              final expiring = inventoryProvider.expiringSoonIngredients;
-              final expired = inventoryProvider.expiredIngredients;
-
-              return Column(
-                children: [
-                  if (expired.isNotEmpty)
-                    _buildAlertCard(
-                      'Expired Items',
-                      '${expired.length} items have expired',
-                      AppTheme.errorRed,
-                      Icons.error,
-                      expired.map((e) => e.name).join(', '),
-                    ),
-                  if (expiring.isNotEmpty)
-                    _buildAlertCard(
-                      'Expiring Soon',
-                      '${expiring.length} items expiring in 3 days',
-                      AppTheme.warningYellow,
-                      Icons.warning,
-                      expiring.map((e) => e.name).join(', '),
-                    ),
-                  if (lowStock.isNotEmpty)
-                    _buildAlertCard(
-                      'Low Stock',
-                      '${lowStock.length} items are low on stock',
-                      AppTheme.primaryBrown,
-                      Icons.inventory_2,
-                      lowStock.map((e) => e.name).join(', '),
-                    ),
-                  if (expired.isEmpty && expiring.isEmpty && lowStock.isEmpty)
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.check_circle,
-                              size: 48,
-                              color: AppTheme.successGreen,
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              'All Good!',
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'No alerts at the moment',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: 20),
-          // System Statistics
-          Text(
-            'System Statistics',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 12),
-          Consumer<InventoryProvider>(
-            builder: (context, inventoryProvider, child) {
-              final totalIngredients = inventoryProvider.inventory.ingredients.length;
-              final totalDishes = inventoryProvider.dishes.length;
-              final lowStockCount = inventoryProvider.lowStockIngredients.length;
-              final expiringCount = inventoryProvider.expiringSoonIngredients.length;
-
-              return Row(
-                children: [
-                  Expanded(
-                    child: _buildStatCard(
-                      'Total Ingredients',
-                      totalIngredients.toString(),
-                      Icons.inventory,
-                      AppTheme.primaryBrown,
-                    ),
+                const SizedBox(width: 16),
+            Container(
+                  width: 44,
+                  height: 44,
+              decoration: BoxDecoration(
+                    color: AppTheme.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildStatCard(
-                      'Total Dishes',
-                      totalDishes.toString(),
-                      Icons.restaurant_menu,
-                      AppTheme.brown,
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-          const SizedBox(height: 12),
-            Consumer<InventoryProvider>(
-              builder: (context, inventoryProvider, child) {
-                return Row(
-                  children: [
-                    Expanded(
-                      child: _buildStatCard(
-                        'Low Stock',
-                        inventoryProvider.lowStockIngredients.length.toString(),
-                        Icons.trending_down,
-                        AppTheme.warningYellow,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildStatCard(
-                        'Expiring Soon',
-                        inventoryProvider.expiringSoonIngredients.length.toString(),
-                        Icons.schedule,
-                        AppTheme.errorRed,
+                  child: const Icon(
+                    Icons.notifications_outlined,
+                    color: AppTheme.white,
+                    size: 22,
                       ),
                     ),
                   ],
-                );
-              },
             ),
-          const SizedBox(height: 20),
-          // Quick Actions with Category Images
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWelcomeSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Text(
-            'Quick Actions',
-            style: Theme.of(context).textTheme.headlineSmall,
+            'Welcome Back!',
+            style: const TextStyle(
+              color: AppTheme.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 34,
+            ),
           ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _buildActionCardWithImage(
-                  'Add Ingredient',
-                  Icons.add_circle,
-                  AppTheme.primaryBrown,
-                  '🥬',
-                  () => _navigateToInventory(context),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildActionCardWithImage(
-                  'Process Order',
-                  Icons.restaurant,
-                  AppTheme.accentBrown,
-                  '🍽️',
-                  () => _navigateToOrders(context),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _buildActionCardWithImage(
-                  'View Analytics',
-                  Icons.analytics,
-                  AppTheme.warningYellow,
-                  '📊',
-                  () => _navigateToAnalytics(context),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildActionCardWithImage(
-                  'Manage Users',
-                  Icons.people,
-                  AppTheme.successGreen,
-                  '👥',
-                  () => _navigateToUsers(context),
-                ),
-              ),
-            ],
+          Text(
+            'Admin',
+            style: const TextStyle(
+              color: AppTheme.grey,
+              fontSize: 26,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildAlertCard(String title, String subtitle, Color color, IconData icon, String details) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+  void _showUserMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Container(
+          margin: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppTheme.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
               ),
-              child: Icon(icon, color: color, size: 24),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: AppTheme.secondaryBrown,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: const Icon(
+                        Icons.person,
+                        color: AppTheme.white,
+                        size: 32,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      color: AppTheme.grey,
-                      fontSize: 14,
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Admin User',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.black,
+                      ),
                     ),
-                  ),
-                  if (details.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     Text(
-                      details,
-                      style: const TextStyle(
+                      'admin@chefventory.com',
+                      style: TextStyle(
+                        fontSize: 14,
                         color: AppTheme.grey,
-                        fontSize: 12,
                       ),
                     ),
                   ],
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Icon(icon, color: color, size: 32),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 24,
-                color: color,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 12,
-                color: AppTheme.grey,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActionCard(String title, IconData icon, Color color, VoidCallback onTap) {
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              Icon(icon, color: color, size: 32),
-              const SizedBox(height: 8),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
                 ),
-                textAlign: TextAlign.center,
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBannerStat(String label, String value, IconData icon) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, color: AppTheme.white, size: 20),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          value,
-          style: const TextStyle(
-            color: AppTheme.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            color: AppTheme.white.withOpacity(0.8),
-            fontSize: 12,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionCardWithImage(String title, IconData icon, Color color, String emoji, VoidCallback onTap) {
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                  child: Text(
-                    emoji,
-                    style: const TextStyle(fontSize: 28),
+              const Divider(height: 1),
+              ListTile(
+                leading: const Icon(Icons.logout, color: AppTheme.errorRed),
+                title: const Text(
+                  'Sign Out',
+                  style: TextStyle(
+                    color: AppTheme.errorRed,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Icon(icon, color: color, size: 24),
-              const SizedBox(height: 8),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
+                onTap: () {
+                  Navigator.pop(context);
+                  _handleSignOut(context);
+                },
               ),
             ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  void _navigateToInventory(BuildContext context) {
-    // This will be handled by the parent widget's navigation
+  void _handleSignOut(BuildContext context) {
+    Provider.of<AuthProvider>(context, listen: false).logout();
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (route) => false,
+    );
   }
 
-  void _navigateToOrders(BuildContext context) {
-    // This will be handled by the parent widget's navigation
-  }
-
-  void _navigateToAnalytics(BuildContext context) {
-    // This will be handled by the parent widget's navigation
-  }
-
-  void _navigateToUsers(BuildContext context) {
-    // This will be handled by the parent widget's navigation
+  Widget _buildSection(BuildContext context, String title, Widget content) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8),
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+            fontWeight: FontWeight.bold,
+                  color: AppTheme.black,
+                ),
+              ),
+              Text(
+                'View All',
+                style: const TextStyle(
+                  color: AppTheme.secondaryBrown,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          content,
+        ],
+      ),
+    );
   }
 }

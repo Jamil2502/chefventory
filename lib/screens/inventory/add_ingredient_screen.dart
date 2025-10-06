@@ -21,7 +21,16 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
   bool _hasExpiryDate = false;
 
   final List<String> _commonUnits = [
-    'kg', 'g', 'lb', 'oz', 'pieces', 'liters', 'ml', 'cups', 'tbsp', 'tsp'
+    'kg',
+    'g',
+    'lb',
+    'oz',
+    'pieces',
+    'liters',
+    'ml',
+    'cups',
+    'tbsp',
+    'tsp',
   ];
 
   @override
@@ -74,7 +83,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Stock Quantity and Unit
               Row(
                 children: [
@@ -103,16 +112,15 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: DropdownButtonFormField<String>(
-                      value: _unitController.text.isNotEmpty ? _unitController.text : null,
+                      initialValue: _unitController.text.isNotEmpty
+                          ? _unitController.text
+                          : null,
                       decoration: const InputDecoration(
                         labelText: 'Unit',
                         prefixIcon: Icon(Icons.straighten),
                       ),
                       items: _commonUnits.map((unit) {
-                        return DropdownMenuItem(
-                          value: unit,
-                          child: Text(unit),
-                        );
+                        return DropdownMenuItem(value: unit, child: Text(unit));
                       }).toList(),
                       onChanged: (value) {
                         if (value != null) {
@@ -130,7 +138,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-              
+
               // Alert Threshold
               TextFormField(
                 controller: _thresholdController,
@@ -153,7 +161,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              
+
               // Expiry Date Toggle
               Card(
                 child: Padding(
@@ -184,12 +192,17 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              border: Border.all(color: AppTheme.grey.withOpacity(0.3)),
+                              border: Border.all(
+                                color: AppTheme.grey.withOpacity(0.3),
+                              ),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.calendar_today, color: AppTheme.grey),
+                                const Icon(
+                                  Icons.calendar_today,
+                                  color: AppTheme.grey,
+                                ),
                                 const SizedBox(width: 12),
                                 Text(
                                   _selectedExpiryDate != null
@@ -211,7 +224,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              
+
               // Save Button
               ElevatedButton(
                 onPressed: _handleSave,
@@ -220,10 +233,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                 ),
                 child: const Text(
                   'Add Ingredient',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -236,11 +246,12 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
   Future<void> _selectExpiryDate() async {
     final date = await showDatePicker(
       context: context,
-      initialDate: _selectedExpiryDate ?? DateTime.now().add(const Duration(days: 7)),
+      initialDate:
+          _selectedExpiryDate ?? DateTime.now().add(const Duration(days: 7)),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
-    
+
     if (date != null) {
       setState(() {
         _selectedExpiryDate = date;
@@ -268,8 +279,10 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
 
       ingredient.updateAlertThreshold(threshold);
 
-      final success = await Provider.of<InventoryProvider>(context, listen: false)
-          .addIngredient(ingredient);
+      final success = await Provider.of<InventoryProvider>(
+        context,
+        listen: false,
+      ).addIngredient(ingredient);
 
       if (success && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

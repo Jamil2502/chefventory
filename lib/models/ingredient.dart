@@ -1,11 +1,11 @@
 class Ingredient {
-  String _ingredientId;
-  String _name;
-  double _currentStock; 
-  String _unit; 
+  final String _ingredientId;
+  final String _name;
+  double _currentStock;
+  final String _unit;
   DateTime? _expiryDate;
-  double _alertThreshold; 
-  DateTime _lastUpdated; 
+  double _alertThreshold;
+  DateTime _lastUpdated;
   static int _idCounter = 1000;
 
   Ingredient({
@@ -14,12 +14,12 @@ class Ingredient {
     required String unit,
     DateTime? expiryDate,
   }) : _ingredientId = 'ing_${++_idCounter}',
-        _name = name,
-        _currentStock = initialStock,
-        _unit = unit,
-        _expiryDate = expiryDate,
-        _alertThreshold = 0, 
-        _lastUpdated = DateTime.now();
+       _name = name,
+       _currentStock = initialStock,
+       _unit = unit,
+       _expiryDate = expiryDate,
+       _alertThreshold = 0,
+       _lastUpdated = DateTime.now();
 
   String get ingredientId => _ingredientId;
   String get name => _name;
@@ -59,7 +59,7 @@ class Ingredient {
   }
 
   bool isLowStock() => _currentStock <= _alertThreshold;
-  
+
   bool isExpiringSoon([int daysAhead = 7]) {
     if (_expiryDate == null) return false;
     final alertDate = DateTime.now().add(Duration(days: daysAhead));

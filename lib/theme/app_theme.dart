@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Color Palette with brown theme
-  static const Color primaryBrown = Color(0xFF502212); // Primary brown
+  static const Color primaryBrown = Color(0xFF4c3025); // Primary brown
+  static const Color secondaryBrown = Color(0xFFaf8043); // Secondary brown
   static const Color darkBrown = Color(0xFF3A1A0D); // Darker brown
   static const Color lightBrown = Color(0xFF6B2F1A); // Light brown
-  static const Color brown = Color(0xFF502212); // Rich brown
-  static const Color accentBrown = Color(0xFF8B4513); // Accent brown
+  static const Color brown = Color(0xFF4c3025); // Rich brown
   static const Color cream = Color(0xFFFFF8F0); // Cream background
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF2C2C2C);
@@ -24,9 +25,8 @@ class AppTheme {
         seedColor: primaryBrown,
         brightness: Brightness.light,
         primary: primaryBrown,
-        secondary: accentBrown,
-        surface: white,
-        background: cream,
+        secondary: secondaryBrown,
+        surface: cream,
         error: errorRed,
       ),
       appBarTheme: AppBarTheme(
@@ -71,41 +71,41 @@ class AppTheme {
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
-      textTheme: const TextTheme(
-        headlineLarge: TextStyle(
+      textTheme: GoogleFonts.manropeTextTheme().copyWith(
+        headlineLarge: GoogleFonts.manrope(
           fontSize: 32,
           fontWeight: FontWeight.bold,
           color: black,
         ),
-        headlineMedium: TextStyle(
+        headlineMedium: GoogleFonts.manrope(
           fontSize: 24,
           fontWeight: FontWeight.bold,
           color: black,
         ),
-        headlineSmall: TextStyle(
+        headlineSmall: GoogleFonts.manrope(
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: black,
         ),
-        titleLarge: TextStyle(
+        titleLarge: GoogleFonts.manrope(
           fontSize: 18,
           fontWeight: FontWeight.w600,
           color: black,
         ),
-        titleMedium: TextStyle(
+        titleMedium: GoogleFonts.manrope(
           fontSize: 16,
           fontWeight: FontWeight.w500,
           color: black,
         ),
-        bodyLarge: TextStyle(
+        bodyLarge: GoogleFonts.manrope(
           fontSize: 16,
           color: black,
         ),
-        bodyMedium: TextStyle(
+        bodyMedium: GoogleFonts.manrope(
           fontSize: 14,
           color: grey,
         ),
-        bodySmall: TextStyle(
+        bodySmall: GoogleFonts.manrope(
           fontSize: 12,
           color: grey,
         ),
@@ -121,9 +121,8 @@ class AppTheme {
         seedColor: primaryBrown,
         brightness: Brightness.dark,
         primary: lightBrown,
-        secondary: accentBrown,
-        surface: const Color(0xFF1A1A1A),
-        background: const Color(0xFF121212),
+        secondary: secondaryBrown,
+        surface: const Color(0xFF121212),
         error: errorRed,
       ),
       appBarTheme: const AppBarTheme(
@@ -168,43 +167,43 @@ class AppTheme {
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
-      textTheme: const TextTheme(
-        headlineLarge: TextStyle(
+      textTheme: GoogleFonts.manropeTextTheme().copyWith(
+        headlineLarge: GoogleFonts.manrope(
           fontSize: 32,
           fontWeight: FontWeight.bold,
           color: white,
         ),
-        headlineMedium: TextStyle(
+        headlineMedium: GoogleFonts.manrope(
           fontSize: 24,
           fontWeight: FontWeight.bold,
           color: white,
         ),
-        headlineSmall: TextStyle(
+        headlineSmall: GoogleFonts.manrope(
           fontSize: 20,
           fontWeight: FontWeight.w600,
           color: white,
         ),
-        titleLarge: TextStyle(
+        titleLarge: GoogleFonts.manrope(
           fontSize: 18,
           fontWeight: FontWeight.w600,
           color: white,
         ),
-        titleMedium: TextStyle(
+        titleMedium: GoogleFonts.manrope(
           fontSize: 16,
           fontWeight: FontWeight.w500,
           color: white,
         ),
-        bodyLarge: TextStyle(
+        bodyLarge: GoogleFonts.manrope(
           fontSize: 16,
           color: white,
         ),
-        bodyMedium: TextStyle(
+        bodyMedium: GoogleFonts.manrope(
           fontSize: 14,
-          color: Color(0xFFB0B0B0),
+          color: const Color(0xFFB0B0B0),
         ),
-        bodySmall: TextStyle(
+        bodySmall: GoogleFonts.manrope(
           fontSize: 12,
-          color: Color(0xFFB0B0B0),
+          color: const Color(0xFFB0B0B0),
         ),
       ),
     );

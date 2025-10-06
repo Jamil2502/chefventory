@@ -65,7 +65,7 @@ class AnalyticsScreen extends StatelessWidget {
                             'Total Dishes',
                             totalDishes.toString(),
                             Icons.restaurant_menu,
-                            AppTheme.accentBrown,
+                            AppTheme.secondaryBrown,
                             'Configured dishes',
                           ),
                         ),
@@ -373,7 +373,7 @@ class AnalyticsScreen extends StatelessWidget {
                   child: _buildWasteItem('Items Wasted', '3', AppTheme.errorRed),
                 ),
                 Expanded(
-                  child: _buildWasteItem('Value Lost', '\$24.50', AppTheme.warningYellow),
+                  child: _buildWasteItem('Value Lost', '₹24.50', AppTheme.warningYellow),
                 ),
                 Expanded(
                   child: _buildWasteItem('Waste Rate', '2.1%', AppTheme.successGreen),
@@ -426,7 +426,7 @@ class AnalyticsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             _buildTimeSlot('12:00 PM - 2:00 PM', 'Lunch Rush', 95, AppTheme.primaryBrown),
-            _buildTimeSlot('6:00 PM - 8:00 PM', 'Dinner Rush', 88, AppTheme.accentBrown),
+            _buildTimeSlot('6:00 PM - 8:00 PM', 'Dinner Rush', 88, AppTheme.secondaryBrown),
             _buildTimeSlot('11:00 AM - 12:00 PM', 'Pre-Lunch', 65, AppTheme.warningYellow),
             _buildTimeSlot('3:00 PM - 5:00 PM', 'Afternoon', 45, AppTheme.grey),
           ],
