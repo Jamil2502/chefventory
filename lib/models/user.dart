@@ -1,19 +1,15 @@
-
 class User {
-  String _userId;
+  final String _userId;
   String _username;
   String _email;
-  String _role; 
+  final String _role;
   static int _idCounter = 1000;
 
-  User({
-    required String username,
-    required String email,
-    required String role,
-  }) : _userId = 'user_${++_idCounter}',
-        _username = username,
-        _email = email,
-        _role = role;
+  User({required String username, required String email, required String role})
+    : _userId = 'user_${++_idCounter}',
+      _username = username,
+      _email = email,
+      _role = role;
 
   String get userId => _userId;
   String get username => _username;
@@ -25,6 +21,6 @@ class User {
 
   bool canManageInventory() => _role == 'admin';
   bool canViewAnalytics() => _role == 'admin';
-  bool canProcessOrders() => true; 
-  bool canViewStock() => true; 
+  bool canProcessOrders() => true;
+  bool canViewStock() => true;
 }
