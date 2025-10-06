@@ -1,21 +1,20 @@
-
 import 'dart:collection';
 import 'ingredient.dart';
 import 'dish.dart';
 
 class Inventory {
-  Map<String, Ingredient> _ingredients;
-  String _restaurantId;
+  final Map<String, Ingredient> _ingredients;
+  final String _restaurantId;
   DateTime _lastUpdated;
 
-  Inventory({required String restaurantId}) 
-      : _ingredients = <String, Ingredient>{},
-        _restaurantId = restaurantId,
-        _lastUpdated = DateTime.now();
+  Inventory({required String restaurantId})
+    : _ingredients = <String, Ingredient>{},
+      _restaurantId = restaurantId,
+      _lastUpdated = DateTime.now();
 
   String get restaurantId => _restaurantId;
   DateTime get lastUpdated => _lastUpdated;
-  UnmodifiableMapView<String, Ingredient> get ingredients => 
+  UnmodifiableMapView<String, Ingredient> get ingredients =>
       UnmodifiableMapView(_ingredients);
 
   bool addIngredient(Ingredient ingredient) {
@@ -24,7 +23,7 @@ class Inventory {
       _lastUpdated = DateTime.now();
       return true;
     }
-    return false; 
+    return false;
   }
 
   bool removeIngredient(String ingredientId) {
@@ -76,8 +75,9 @@ class Inventory {
   List<Ingredient> searchIngredients(String query) {
     final lowerQuery = query.toLowerCase();
     return _ingredients.values
-        .where((ingredient) => 
-            ingredient.name.toLowerCase().contains(lowerQuery))
+        .where(
+          (ingredient) => ingredient.name.toLowerCase().contains(lowerQuery),
+        )
         .toList();
   }
 
@@ -91,7 +91,7 @@ class Inventory {
         final ingredientId = entry.key;
         final requiredQuantity = entry.value;
         final ingredient = _ingredients[ingredientId];
-        
+
         if (ingredient != null) {
           if (requiredQuantity > ingredient.alertThreshold) {
             ingredient.updateAlertThreshold(requiredQuantity);
