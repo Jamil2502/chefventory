@@ -70,4 +70,32 @@ class Ingredient {
     if (_expiryDate == null) return false;
     return _expiryDate!.isBefore(DateTime.now());
   }
+
+  factory Ingredient.fromFirestore(Map<String, dynamic> data, String id) {
+    return Ingredient(
+      name: data['name'] ?? '',
+      initialStock: (data['currentStock'] as num?)?.toDouble() ?? 0.0,
+      unit: data['unit'] ?? 'g',
+      expiryDate: data['expiryDate'] != null
+          ? DateTime.parse(data['expiryDate'])
+          : null,
+    )
+    .._ingredientId = data['ingredientId'] ?? id
+    .._alertThreshold = (data['alertThreshold'] as num?)?.toDouble() ?? 0.0
+    .._lastUpdated = data['lastUpdated'] != null
+        ? DateTime.parse(data['lastUpdated'])
+        : DateTime.now();
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'ingredientId': _ingredientId,
+      'name': _name,
+      'currentStock': _currentStock,
+      'unit': _unit,
+      'expiryDate': _expiryDate?.toIso8601String(),
+      'alertThreshold': _alertThreshold,
+      'lastUpdated': _lastUpdated.toIso8601String(),
+    };
+  }
 }

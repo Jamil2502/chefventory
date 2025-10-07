@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; 
+import 'package:chefventory/screens/dishes/add_dish_screen.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,12 +20,7 @@ class Chefventory extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Chefventory',
-      home: Scaffold(
-        appBar: AppBar(title: Text('Chefventory')),
-        body: Center(
-          child: Text('Firebase Setup Complete!'),
-        ),
-      ),
-    );
+      home: AddDishScreen(),
+      );
   }
 }

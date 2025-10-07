@@ -1,36 +1,56 @@
-
 import 'dart:collection';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'ingredient.dart';
 
 class Dish {
-  String _dishId;
+  String? id; 
   String _name;
   String _description;
   double _basePrice;
   Map<String, double> _ingredientRequirements; 
   String _category;
-  static int _idCounter = 1000;
 
   Dish({
+    this.id,
     required String name,
     required String description,
     required double basePrice,
     required Map<String, double> ingredientRequirements,
     required String category,
-  }) : _dishId = 'dish_${++_idCounter}',
-        _name = name,
+  }) : _name = name,
         _description = description,
         _basePrice = basePrice,
         _ingredientRequirements = Map<String, double>.from(ingredientRequirements),
         _category = category;
 
-  String get dishId => _dishId;
   String get name => _name;
   String get description => _description;
   double get basePrice => _basePrice;
   UnmodifiableMapView<String, double> get ingredientRequirements => 
       UnmodifiableMapView(_ingredientRequirements);
   String get category => _category;
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': _name,
+      'description': _description,
+      'basePrice': _basePrice,
+      'ingredientRequirements': _ingredientRequirements,
+      'category': _category,
+    };
+  }
+
+  factory Dish.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+    final data = doc.data()!;
+    return Dish(
+      id: doc.id,
+      name: data['name'] as String,
+      description: data['description'] as String,
+      basePrice: (data['basePrice'] as num).toDouble(),
+      ingredientRequirements: Map<String, double>.from(data['ingredientRequirements']),
+      category: data['category'] as String,
+    );
+  }
 
   bool updatePrice(double newPrice) {
     if (newPrice > 0) {
