@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:chefventory/services/firebase_config.dart';
-import 'package:chefventory/models/ingredient.dart';
 import 'package:chefventory/services/ingredient_service.dart';
+import 'package:chefventory/models/ingredient.dart';
 
 class InventoryService {
   final IngredientService _ingredientService = IngredientService();
@@ -11,52 +9,36 @@ class InventoryService {
   }
 
   Future<List<Ingredient>> getLowStockIngredients() async {
-    try {
-      final allIngredients = await _ingredientService.fetchAllIngredients();
-      return allIngredients
-          .where((ingredient) =>
-              ingredient.currentStock <= ingredient.alertThreshold)
-          .toList();
-    } catch (e) {
-      print('Error fetching low stock ingredients: $e');
-      throw Exception(FirebaseConfig.getErrorMessage(e));
-    }
+    final allIngredients = await fetchAllIngredients();
+    return allIngredients.where((ingredient) => ingredient.isLowStock()).toList();
   }
 
   Future<List<Ingredient>> getExpiringSoonIngredients(int daysAhead) async {
-    try {
-      final now = DateTime.now();
-      final alertDate = now.add(Duration(days: daysAhead));
-      final querySnapshot = await FirebaseConfig.ingredients
-          .where('expiryDate', isGreaterThan: Timestamp.fromDate(now))
-          .where('expiryDate', isLessThanOrEqualTo: Timestamp.fromDate(alertDate))
-          .get();
-
-      return querySnapshot.docs
-          .map((doc) => Ingredient.fromMap(doc.id, doc.data() as Map<String, dynamic>))
-          .toList();
-    } catch (e) {
-      print('Error fetching expiring ingredients: $e');
-      throw Exception(FirebaseConfig.getErrorMessage(e));
-    }
+    final allIngredients = await fetchAllIngredients();
+    final now = DateTime.now();
+    final soon = now.add(Duration(days: daysAhead));
+    return allIngredients.where((ingredient) =>
+      ingredient.expiryDate != null &&
+      ingredient.expiryDate!.isAfter(now) &&
+      ingredient.expiryDate!.isBefore(soon) &&
+      !ingredient.isExpired()
+    ).toList();
   }
 
   Future<List<Ingredient>> getExpiredIngredients() async {
-    try {
-      final now = DateTime.now();
-      final querySnapshot = await FirebaseConfig.ingredients
-          .where('expiryDate', isLessThanOrEqualTo: Timestamp.fromDate(now))
-          .get();
-      return querySnapshot.docs
-          .map((doc) => Ingredient.fromMap(doc.id, doc.data() as Map<String, dynamic>))
-          .toList();
-    } catch (e) {
-      print('Error fetching expired ingredients: $e');
-      throw Exception(FirebaseConfig.getErrorMessage(e));
-    }
+    final allIngredients = await fetchAllIngredients();
+    return allIngredients.where((ingredient) => ingredient.isExpired()).toList();
   }
 
   Future<void> updateStock(String id, double qtyChange) async {
     await _ingredientService.updateStock(id, qtyChange);
+  }
+
+  Future<void> deleteIngredient(String id) async {
+    await _ingredientService.deleteIngredient(id);
+  }
+
+  Future<Ingredient?> fetchIngredientById(String ingredientId) async {
+    return await _ingredientService.fetchIngredientById(ingredientId);
   }
 }

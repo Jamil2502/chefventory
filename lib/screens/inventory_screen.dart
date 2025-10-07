@@ -97,8 +97,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
         .toList();
   }
 
-  Future<void> _updateStock(String id, double qty) async {
-    await _inventoryService.updateStock(id, qty);
+  Future<void> _updateStock(String id, double qtyChange) async {
+    await _inventoryService.updateStock(id, qtyChange);
     await _fetchIngredients();
   }
 
@@ -110,7 +110,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
         title: const Text('Inventory', style: TextStyle(color: Colors.white),),
         backgroundColor: primaryBrown,
         elevation: 0,
-        
+        centerTitle: true,
       ),
       body: Column(
         children: [
@@ -323,19 +323,19 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 Icon(Icons.update, size: 16, color: Colors.grey.shade600),
                 const SizedBox(width: 4),
                 Text(
-                  'Updated: ${_formatDate(ingredient.lastUpdated)}',
+                  'Updated: ${ingredient.lastUpdated != null ? _formatDate(ingredient.lastUpdated!) : "-"}',
                   style: TextStyle(color: Colors.grey.shade600),
                 ),
                 const Spacer(),
                 IconButton(
-                  icon: Icon(Icons.add_circle, size: 26, color: primaryBrown),
-                  tooltip: 'Add Stock',
-                  onPressed: () => _showStockDialog(ingredient, true),
-                ),
-                IconButton(
                   icon: Icon(Icons.remove_circle, size: 26, color: primaryBrown),
                   tooltip: 'Consume Stock',
                   onPressed: () => _showStockDialog(ingredient, false),
+                ),
+                IconButton(
+                  icon: Icon(Icons.add_circle, size: 26, color: primaryBrown),
+                  tooltip: 'Add Stock',
+                  onPressed: () => _showStockDialog(ingredient, true),
                 ),
               ],
             ),
@@ -378,6 +378,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: primaryBrown, foregroundColor: Colors.white),
             child: Text(addStock ? 'Add' : 'Consume'),
             onPressed: () async {
               final quantity = double.tryParse(quantityController.text);
