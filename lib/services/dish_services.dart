@@ -9,6 +9,15 @@ class DishService {
   final ingredientsCollection = FirebaseConfig.ingredients;
   final ordersCollection = FirebaseConfig.orders;
 
+  final List<Dish> _localDishes = [];
+
+  final List<Ingredient> _mockIngredients = [
+    Ingredient(name: 'Butter', initialStock: 0, unit: 'g'),
+    Ingredient(name: 'Cheese', initialStock: 0, unit: 'g'),
+    Ingredient(name: 'Capsicum', initialStock: 0, unit: 'g'),
+    Ingredient(name: 'Pasta', initialStock: 0, unit: 'g'),
+  ];
+
   Future<void> addDish(Dish dish) async {
     final batch = db.batch(); //initiates the firebase 
 
@@ -51,6 +60,7 @@ class DishService {
       final ingredientId = ingredientIdMap[ingredientName]!;
       await _recalculateAlertThreshold(ingredientId);
     }
+    _localDishes.add(dish);
   }
 
   Stream<List<Ingredient>> searchIngredients(String query) {
@@ -100,4 +110,5 @@ class DishService {
       'lastUpdated': Timestamp.now(),
     });
   }
+  List<Dish> get localDishes => List.unmodifiable(_localDishes);
 }
