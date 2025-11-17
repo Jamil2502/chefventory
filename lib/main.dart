@@ -1,4 +1,3 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +41,6 @@ class Chefventory extends StatelessWidget {
             home: Consumer<AuthProvider>(
               builder: (context, authProvider, child) {
                 if (authProvider.isAuthenticated) {
-                  // Navigate to appropriate dashboard based on role
                   if (authProvider.isAdmin) {
                     return const AdminDashboard();
                   } else if (authProvider.isStaff) {

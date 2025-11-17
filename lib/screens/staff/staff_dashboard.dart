@@ -311,7 +311,7 @@ class ModernStaffHomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     const Text(
-                      'Staff User',
+                      'Kitchen Staff',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -320,7 +320,7 @@ class ModernStaffHomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'staff@chefventory.com',
+                      'staff1@restaurant.com',
                       style: TextStyle(
                         fontSize: 14,
                         color: AppTheme.grey,

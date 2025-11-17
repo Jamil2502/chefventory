@@ -11,7 +11,6 @@ import 'widgets/alert_center_widget.dart';
 import 'widgets/system_statistics_widget.dart';
 import 'widgets/recent_activity_widget.dart';
 import 'widgets/quick_actions_widget.dart';
-import 'widgets/analytics_overview_widget.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -140,14 +139,6 @@ class AdminHomeScreen extends StatelessWidget {
               const QuickActionsWidget(),
             ),
 
-            const SizedBox(height: 24),
-            
-            _buildSection(
-              context,
-              'Analytics Overview',
-              const AnalyticsOverviewWidget(),
-            ),
-            
             const SizedBox(height: 48),
           ],
         ),
@@ -353,7 +344,7 @@ class AdminHomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     const Text(
-                      'Admin User',
+                      'Admin',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -362,7 +353,7 @@ class AdminHomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'admin@chefventory.com',
+                      'manager@restaurant.com',
                       style: TextStyle(
                         fontSize: 14,
                         color: AppTheme.grey,

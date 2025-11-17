@@ -42,7 +42,7 @@ class QuickOrderProcessingWidget extends StatelessWidget {
                 Expanded(
                   child: _buildModernStatCard(
                     'Orders Today',
-                    '12',
+                    inventoryProvider.orders.length.toString(),
                     Icons.shopping_cart,
                     AppTheme.secondaryBrown,
                     '+8%',

@@ -58,7 +58,7 @@ class CurrentInventoryWidget extends StatelessWidget {
                 Expanded(
                   child: _buildModernStatCard(
                     'Inventory Value',
-                    '₹8.2K',
+                    _calculateInventoryValue(inventoryProvider),
                     Icons.attach_money,
                     AppTheme.successGreen,
                     '+3%',
@@ -71,6 +71,51 @@ class CurrentInventoryWidget extends StatelessWidget {
         );
       },
     );
+  }
+
+  String _calculateInventoryValue(InventoryProvider inventoryProvider) {
+    // Calculate approximate inventory value based on sample data
+    // This is a simplified calculation - in a real app, you'd have actual prices
+    double totalValue = 0.0;
+    for (var ingredient in inventoryProvider.inventory.ingredients.values) {
+      // Using sample data prices as reference (simplified calculation)
+      double pricePerUnit = 0.0;
+      switch (ingredient.name.toLowerCase()) {
+        case 'tomato':
+          pricePerUnit = 0.8; // ₹0.8 per gram
+          break;
+        case 'onion':
+          pricePerUnit = 0.6; // ₹0.6 per gram
+          break;
+        case 'mozzarella cheese':
+          pricePerUnit = 1.2; // ₹1.2 per gram
+          break;
+        case 'pasta':
+          pricePerUnit = 0.4; // ₹0.4 per gram
+          break;
+        case 'olive oil':
+          pricePerUnit = 0.15; // ₹0.15 per ml
+          break;
+        case 'garlic':
+          pricePerUnit = 2.0; // ₹2.0 per gram
+          break;
+        case 'bell pepper':
+          pricePerUnit = 1.0; // ₹1.0 per gram
+          break;
+        case 'chicken breast':
+          pricePerUnit = 0.3; // ₹0.3 per gram
+          break;
+        default:
+          pricePerUnit = 0.5; // Default price
+      }
+      totalValue += ingredient.currentStock * pricePerUnit;
+    }
+    
+    if (totalValue >= 1000) {
+      return '₹${(totalValue / 1000).toStringAsFixed(1)}K';
+    } else {
+      return '₹${totalValue.toStringAsFixed(0)}';
+    }
   }
 
   Widget _buildModernStatCard(String title, String value, IconData icon, Color color, String change, bool isPositive) {

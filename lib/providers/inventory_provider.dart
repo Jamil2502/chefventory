@@ -6,11 +6,13 @@ import '../models/dish.dart';
 class InventoryProvider with ChangeNotifier {
   final Inventory _inventory = Inventory(restaurantId: 'rest_001');
   List<Dish> _dishes = [];
+  List<Map<String, dynamic>> _orders = [];
   bool _isLoading = false;
   String? _errorMessage;
 
   Inventory get inventory => _inventory;
   List<Dish> get dishes => _dishes;
+  List<Map<String, dynamic>> get orders => _orders;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
@@ -147,6 +149,31 @@ class InventoryProvider with ChangeNotifier {
 
     // Update alert thresholds based on dishes
     _inventory.updateAlertThresholds(_dishes);
+
+    // Add sample orders
+    _orders = [
+      {
+        'orderId': 'order_1001',
+        'dishName': 'Classic Burger',
+        'quantity': 2,
+        'timestamp': DateTime.now().subtract(const Duration(minutes: 5)),
+        'status': 'completed'
+      },
+      {
+        'orderId': 'order_1002',
+        'dishName': 'Chicken Sandwich',
+        'quantity': 1,
+        'timestamp': DateTime.now().subtract(const Duration(minutes: 12)),
+        'status': 'completed'
+      },
+      {
+        'orderId': 'order_1003',
+        'dishName': 'French Fries',
+        'quantity': 3,
+        'timestamp': DateTime.now().subtract(const Duration(minutes: 20)),
+        'status': 'completed'
+      },
+    ];
   }
 
   Future<bool> addIngredient(Ingredient ingredient) async {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/inventory_provider.dart';
 import '../../../theme/app_theme.dart';
 
 class RecentActivityWidget extends StatelessWidget {
@@ -6,47 +8,72 @@ class RecentActivityWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activities = [
-      {
-        'title': 'Tomatoes restocked',
-        'subtitle': '50 kg added to inventory',
-        'time': '5 min ago',
-        'icon': Icons.add_circle,
-        'color': AppTheme.successGreen,
+    return Consumer<InventoryProvider>(
+      builder: (context, inventoryProvider, child) {
+        final activities = _generateActivitiesFromSampleData(inventoryProvider);
+
+        return Column(
+          children: activities.map((activity) => _buildActivityItem(
+            context,
+            activity['title'] as String,
+            activity['subtitle'] as String,
+            activity['time'] as String,
+            activity['icon'] as IconData,
+            activity['color'] as Color,
+          )).toList(),
+        );
       },
-      {
-        'title': 'Order #1247 processed',
-        'subtitle': 'Pasta Marinara x3',
-        'time': '12 min ago',
+    );
+  }
+
+  List<Map<String, dynamic>> _generateActivitiesFromSampleData(InventoryProvider inventoryProvider) {
+    final activities = <Map<String, dynamic>>[];
+    
+    // Add order activities from sample data
+    for (var order in inventoryProvider.orders.take(2)) {
+      final orderTime = order['timestamp'] as DateTime;
+      activities.add({
+        'title': 'Order #${order['orderId'].toString().substring(6)} processed',
+        'subtitle': '${order['dishName']} x${order['quantity']}',
+        'time': '${DateTime.now().difference(orderTime).inMinutes} min ago',
         'icon': Icons.restaurant,
         'color': AppTheme.primaryBrown,
-      },
-      {
-        'title': 'User login: John Doe',
-        'subtitle': 'Kitchen staff access',
-        'time': '1 hour ago',
-        'icon': Icons.person,
-        'color': AppTheme.secondaryBrown,
-      },
-      {
+      });
+    }
+    
+    // Add ingredient activities based on sample data
+    final lowStockIngredients = inventoryProvider.lowStockIngredients;
+    if (lowStockIngredients.isNotEmpty) {
+      activities.add({
         'title': 'Low stock alert',
-        'subtitle': 'Cheese below threshold',
-        'time': '2 hours ago',
+        'subtitle': '${lowStockIngredients.first.name} below threshold',
+        'time': '1 hour ago',
         'icon': Icons.warning,
         'color': AppTheme.warningYellow,
-      },
-    ];
-
-    return Column(
-      children: activities.map((activity) => _buildActivityItem(
-        context,
-        activity['title'] as String,
-        activity['subtitle'] as String,
-        activity['time'] as String,
-        activity['icon'] as IconData,
-        activity['color'] as Color,
-      )).toList(),
-    );
+      });
+    }
+    
+    final expiredIngredients = inventoryProvider.expiredIngredients;
+    if (expiredIngredients.isNotEmpty) {
+      activities.add({
+        'title': 'Expired ingredient',
+        'subtitle': '${expiredIngredients.first.name} needs attention',
+        'time': '2 hours ago',
+        'icon': Icons.error,
+        'color': AppTheme.errorRed,
+      });
+    }
+    
+    // Add a restocking activity
+    activities.add({
+      'title': 'Tomatoes restocked',
+      'subtitle': '5kg added to inventory',
+      'time': '3 hours ago',
+      'icon': Icons.add_circle,
+      'color': AppTheme.successGreen,
+    });
+    
+    return activities;
   }
 
   Widget _buildActivityItem(BuildContext context, String title, String subtitle, String time, IconData icon, Color color) {
