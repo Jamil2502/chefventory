@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "924507363354",
+    "project_id": "chefventory2",
+    "storage_bucket": "chefventory2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924507363354:android:ddfe4e4f2824bdd5a519a3",
+        "android_client_info": {
+          "package_name": "com.example.chefventory_final"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2a-Jni1ZEATz_9B0OJfFLYiLaGST49Zs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

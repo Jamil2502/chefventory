@@ -1,0 +1,133 @@
+// ========================================
+// FIRESTORE SECURITY RULES FOR CHEFVENTORY
+// ========================================
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ========== UTILITY FUNCTIONS ==========
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin(restaurantId) {
+      // Check if user is admin in the restaurant's users collection
+      return isAuthenticated() && (
+        exists(/databases/$(database)/documents/restaurants/$(restaurantId)/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/restaurants/$(restaurantId)/users/$(request.auth.uid)).data.role == 'admin'
+      );
+    }
+    
+    function isStaff(restaurantId) {
+      // Check if user is staff or admin in the restaurant's users collection
+      return isAuthenticated() && (
+        exists(/databases/$(database)/documents/restaurants/$(restaurantId)/users/$(request.auth.uid)) &&
+        (
+          get(/databases/$(database)/documents/restaurants/$(restaurantId)/users/$(request.auth.uid)).data.role == 'staff' ||
+          get(/databases/$(database)/documents/restaurants/$(restaurantId)/users/$(request.auth.uid)).data.role == 'admin'
+        )
+      );
+    }
+    
+    function isAdminOrStaff(restaurantId) {
+      return isStaff(restaurantId);
+    }
+
+
+    // ========== RESTAURANTS COLLECTION ==========
+    match /restaurants/{restaurantId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAdmin(restaurantId);
+      allow delete: if false;
+
+
+      // ========== USERS SUBCOLLECTION ==========
+      match /users/{userId} {
+        // Anyone in this restaurant can read any user in it
+        allow read: if isAdminOrStaff(restaurantId);
+
+        // Self-write: newly created user can create their own doc
+        // Admin can also create/update staff docs
+        allow create: if (request.auth.uid == userId) ||
+                        isAdmin(restaurantId);
+
+        // Admin can update any user; user can update only themselves with same role/email
+        allow update: if isAdmin(restaurantId) ||
+          (request.auth.uid == userId &&
+           request.resource.data.role == resource.data.role &&
+           request.resource.data.email == resource.data.email);
+
+        // Only admin can delete
+        allow delete: if isAdmin(restaurantId);
+      }
+
+
+      // ========== INGREDIENTS ==========
+      match /ingredients/{ingredientId} {
+        allow read: if isAdminOrStaff(restaurantId);
+        allow create, update: if isAdmin(restaurantId);
+        allow delete: if isAdmin(restaurantId);
+      }
+
+      // ========== DISHES ==========
+      match /dishes/{dishId} {
+        allow read: if isAdminOrStaff(restaurantId);
+        allow create, update: if isAdmin(restaurantId);
+        allow delete: if isAdmin(restaurantId);
+      }
+
+      // ========== ORDERS ==========
+      match /orders/{orderId} {
+        allow read: if isAdminOrStaff(restaurantId);
+        allow create: if isAdminOrStaff(restaurantId);
+        allow update: if isAdmin(restaurantId);
+        allow delete: if false;
+      }
+
+      // ========== ALERTS ==========
+      match /alerts/{alertId} {
+        allow read: if isAdminOrStaff(restaurantId);
+        allow create, update: if isAdmin(restaurantId);
+        allow delete: if false;
+      }
+
+      // ========== ACTIVITIES ==========
+      match /activities/{activityId} {
+        allow read: if isAdminOrStaff(restaurantId);
+        allow create: if isAdminOrStaff(restaurantId);
+        allow update, delete: if false;
+      }
+    }
+
+
+    // ========== USER PROFILES (Global) ==========
+    match /userProfiles/{userId} {
+      // Owner can create and update their own profile
+      allow create, update: if request.auth != null && request.auth.uid == userId;
+
+      // Owner can read; admin from same restaurant can read
+      allow read: if request.auth != null && (
+        request.auth.uid == userId ||
+        (
+          exists(/databases/$(database)/documents/userProfiles/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/userProfiles/$(request.auth.uid)).data.restaurantId == resource.data.restaurantId &&
+          isAdmin(resource.data.restaurantId)
+        )
+      );
+    }
+
+
+    // ========== ACTIVE SESSIONS ==========
+    match /activeSessions/{userId} {
+      // Only the owner can read/write
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+
+    // ========== DENY ALL OTHER ACCESS ==========
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
