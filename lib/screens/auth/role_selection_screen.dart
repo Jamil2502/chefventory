@@ -96,7 +96,7 @@ class RoleSelectionScreen extends StatelessWidget {
                       features: [
                         'Full inventory control',
                         'Manage staff members',
-                        'View analytics & reports',
+                        'Monitor activities',
                       ],
                       onTap: () {
                         Navigator.pushNamed(context, '/admin-auth');
