@@ -34,7 +34,9 @@ class _InventoryScreenState extends State<InventoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      backgroundColor: AppTheme.cream,
+      body: SafeArea(
+        child: Column(
         children: [
           // Search and Filter Bar
           Container(
@@ -195,6 +197,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
             ),
           ),
         ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateToAddIngredient(context),
@@ -464,3 +467,5 @@ class _InventoryScreenState extends State<InventoryScreen> {
     return '${date.day}/${date.month}/${date.year}';
   }
 }
+
+

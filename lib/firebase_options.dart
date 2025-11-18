@@ -85,3 +85,4 @@ class DefaultFirebaseOptions {
     measurementId: 'G-R0XP4G8PY5',
   );
 }
+

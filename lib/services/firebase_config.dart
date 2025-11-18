@@ -22,3 +22,4 @@ class FirebaseConfig {
   static CollectionReference<Map<String, dynamic>> orders(String restaurantId) =>
       db.collection('restaurants').doc(restaurantId).collection('orders');
 }
+

@@ -43,7 +43,8 @@ class _OrderProcessingScreenState extends State<OrderProcessingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: SafeArea(
+        child: Column(
         children: [
           // Search and Filter Bar
           Container(
@@ -173,6 +174,7 @@ class _OrderProcessingScreenState extends State<OrderProcessingScreen> {
           if (_selectedDishes.isNotEmpty) _buildOrderSummary(),
         ],
       ),
+        ),
     );
   }
 

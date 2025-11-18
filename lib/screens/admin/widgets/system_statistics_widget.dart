@@ -74,18 +74,14 @@ class SystemStatisticsWidget extends StatelessWidget {
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: StreamBuilder<List<Dish>>(
-                stream: Provider.of<InventoryProvider>(context, listen: false).watchDishes(),
+              child: FutureBuilder<double>(
+                future: Provider.of<OrderProvider>(context, listen: false).getTodayRevenue(),
                 builder: (context, snapshot) {
-                  double total = 0;
-                  if (snapshot.hasData) {
-                    // Calculate total inventory value from dishes
-                    total = snapshot.data!.fold<double>(0, (sum, dish) => sum + dish.basePrice);
-                  }
-                  final value = total > 1000 ? '₹${(total / 1000).toStringAsFixed(1)}K' : '₹${total.toStringAsFixed(0)}';
+                  double revenue = snapshot.data ?? 0;
+                  final value = revenue > 1000 ? '₹${(revenue / 1000).toStringAsFixed(1)}K' : '₹${revenue.toStringAsFixed(0)}';
                   return _buildModernStatCard(
                     context,
-                    'Inventory Value',
+                    'Revenue Today',
                     value,
                     Icons.attach_money,
                     AppTheme.warningYellow,
@@ -156,3 +152,5 @@ class SystemStatisticsWidget extends StatelessWidget {
     );
   }
 }
+
+
